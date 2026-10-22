@@ -1,0 +1,85 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.4'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.pipeline'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+// Force ANTLR runtime 4.8 to match Spark 3.5.1 SQL parser
+configurations.all {
+    resolutionStrategy {
+        force 'org.antlr:antlr4-runtime:4.8'
+    }
+    
+    // Exclude competing logging and provider implementations
+    exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j2-impl'
+    exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+    exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    exclude group: 'org.slf4j', module: 'slf4j-reload4j'
+    exclude group: 'log4j', module: 'log4j'
+}
+
+dependencies {
+    // Legacy servlet API required by Spark internal UI and MetricsServlet
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+
+    // Force exact ANTLR runtime for Spark SQL Catalyst Parser
+    implementation 'org.antlr:antlr4-runtime:4.8'
+
+    // --- Spring Boot ---
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    // --- PostgreSQL ---
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.postgresql:postgresql'
+
+    // --- Apache Spark ---
+    implementation 'org.apache.spark:spark-sql_2.12:3.5.1'
+    implementation 'org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1'
+
+    // --- Log4j 2 Core API ---
+    implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+
+    // --- Jackson & Testing ---
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+// JVM options required for Spark under Java 17
+tasks.named('bootRun') {
+    jvmArgs = [
+        '--add-opens=java.base/java.lang=ALL-UNNAMED',
+        '--add-opens=java.base/java.lang.invoke=ALL-UNNAMED',
+        '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED',
+        '--add-opens=java.base/java.io=ALL-UNNAMED',
+        '--add-opens=java.base/java.net=ALL-UNNAMED',
+        '--add-opens=java.base/java.nio=ALL-UNNAMED',
+        '--add-opens=java.base/java.util=ALL-UNNAMED',
+        '--add-opens=java.base/java.util.concurrent=ALL-UNNAMED',
+        '--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED',
+        '--add-opens=java.base/sun.nio.ch=ALL-UNNAMED',
+        '--add-opens=java.base/sun.nio.cs=ALL-UNNAMED',
+        '--add-opens=java.base/sun.security.action=ALL-UNNAMED',
+        '--add-opens=java.base/sun.util.calendar=ALL-UNNAMED',
+        '-Djdk.reflect.useDirectMethodHandle=false'
+    ]
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

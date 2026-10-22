@@ -1,0 +1,47 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# Java / Compilation
+*.class
+bin/
+
+# IDEs and Editors
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS artifacts
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment variables & secrets (retain hadoop.env as repository config)
+*.env
+*.env.local
+*.env.*.local
+!hadoop.env
+
+# Spark / Kafka / Hadoop runtime artifacts
+checkpoint/
+/tmp/spark-*
+metastore_db/
+derby.log
+
+# Logs
+logs/
+*.log
