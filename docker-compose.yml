@@ -61,6 +61,10 @@ services:
             <name>dfs.replication</name>
             <value>1</value>
           </property>
+          <property>
+            <name>dfs.client.use.datanode.hostname</name>
+            <value>true</value>
+          </property>
         </configuration>
         EOF
 
@@ -98,10 +102,18 @@ services:
             <name>dfs.replication</name>
             <value>1</value>
           </property>
+          <property>
+            <name>dfs.client.use.datanode.hostname</name>
+            <value>true</value>
+          </property>
         </configuration>
         EOF
 
         /opt/hadoop/bin/hdfs datanode
+    ports:
+      - "9864:9864"
+      - "9866:9866"
+      - "9867:9867"
     depends_on:
       - namenode
 
