@@ -45,7 +45,7 @@ class ReportingControllerTest {
 
     @Test
     void testGetPipelineStatus() {
-        when(repository.count()).thenReturn(42L);
+        when(repository.countNative()).thenReturn(42L);
         when(repository.findTop10ByOrderByTimestampDesc()).thenReturn(Collections.emptyList());
 
         ResponseEntity<Map<String, Object>> response = controller.getPipelineStatus();

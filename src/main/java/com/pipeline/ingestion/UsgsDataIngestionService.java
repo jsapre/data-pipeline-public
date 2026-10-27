@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pipeline.config.KafkaConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,9 @@ public class UsgsDataIngestionService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
+    @Autowired
     public UsgsDataIngestionService(KafkaTemplate<String, String> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
-        this.restTemplate = new RestTemplate();
-        this.objectMapper = new ObjectMapper();
+        this(kafkaTemplate, new RestTemplate(), new ObjectMapper());
     }
 
     public UsgsDataIngestionService(KafkaTemplate<String, String> kafkaTemplate, RestTemplate restTemplate, ObjectMapper objectMapper) {

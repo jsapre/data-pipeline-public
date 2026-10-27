@@ -17,12 +17,12 @@ repositories {
     mavenCentral()
 }
 
-// Force ANTLR runtime 4.8 to match Spark 3.5.1 SQL parser
+// Force ANTLR runtime 4.8 to match Spark 3.5.1 SQL Catalyst parser
 configurations.all {
     resolutionStrategy {
         force 'org.antlr:antlr4-runtime:4.8'
     }
-    
+
     // Exclude competing logging and provider implementations
     exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j2-impl'
     exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'

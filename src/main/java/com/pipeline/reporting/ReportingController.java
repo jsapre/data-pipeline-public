@@ -37,7 +37,7 @@ public class ReportingController {
     @GetMapping("/status")
     public ResponseEntity<Map<String, Object>> getPipelineStatus() {
         Map<String, Object> status = new HashMap<>();
-        long totalRecords = repository.count();
+        long totalRecords = repository.countNative();
         List<WaterMetric> latest = repository.findTop10ByOrderByTimestampDesc();
 
         status.put("totalPostgresRecords", totalRecords);

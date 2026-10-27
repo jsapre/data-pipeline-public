@@ -39,8 +39,10 @@ services:
   # --- HADOOP HDFS NAMENODE ---
   namenode:
     image: apache/hadoop:3.3.6
-    platform: linux/arm64
+    platform: linux/amd64
     container_name: pipeline-namenode
+    environment:
+      HADOOP_OPTS: "-Xint"
     entrypoint: []
     command:
       - /bin/bash
@@ -65,11 +67,23 @@ services:
             <name>dfs.client.use.datanode.hostname</name>
             <value>true</value>
           </property>
+          <property>
+            <name>dfs.namenode.name.dir</name>
+            <value>file:///tmp/hadoop-dfs/name</value>
+          </property>
+          <property>
+            <name>dfs.namenode.rpc-bind-host</name>
+            <value>0.0.0.0</value>
+          </property>
+          <property>
+            <name>dfs.namenode.http-bind-host</name>
+            <value>0.0.0.0</value>
+          </property>
         </configuration>
         EOF
 
-        mkdir -p /tmp/hadoop-root/dfs/name
-        if [ ! -d "/tmp/hadoop-root/dfs/name/current" ]; then
+        mkdir -p /tmp/hadoop-dfs/name
+        if [ ! -d "/tmp/hadoop-dfs/name/current" ]; then
           /opt/hadoop/bin/hdfs namenode -format -force -nonInteractive
         fi
         /opt/hadoop/bin/hdfs namenode
@@ -80,8 +94,10 @@ services:
   # --- HADOOP HDFS DATANODE ---
   datanode:
     image: apache/hadoop:3.3.6
-    platform: linux/arm64
+    platform: linux/amd64
     container_name: pipeline-datanode
+    environment:
+      HADOOP_OPTS: "-Xint"
     entrypoint: []
     command:
       - /bin/bash
@@ -105,6 +121,10 @@ services:
           <property>
             <name>dfs.client.use.datanode.hostname</name>
             <value>true</value>
+          </property>
+          <property>
+            <name>dfs.datanode.data.dir</name>
+            <value>file:///tmp/hadoop-dfs/data</value>
           </property>
         </configuration>
         EOF
