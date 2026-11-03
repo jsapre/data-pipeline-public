@@ -29,7 +29,8 @@ public class SparkBatchProcessor {
                     .config("spark.ui.enabled", "false")
                     .getOrCreate();
 
-            // Configure HDFS client hostname resolution for containerized DataNode
+            // Configure HDFS client hostname resolution and user for containerized DataNode
+            System.setProperty("HADOOP_USER_NAME", "hadoop");
             spark.sparkContext().hadoopConfiguration().set("dfs.client.use.datanode.hostname", "true");
 
             // Read batch of current records from Kafka

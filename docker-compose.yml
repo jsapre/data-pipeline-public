@@ -41,13 +41,12 @@ services:
     image: apache/hadoop:3.3.6
     platform: linux/amd64
     container_name: pipeline-namenode
-    environment:
-      HADOOP_OPTS: "-Xint"
     entrypoint: []
     command:
       - /bin/bash
       - -c
       - |
+        export HADOOP_OPTS="$$HADOOP_OPTS -Xint"
         cat <<EOF > /opt/hadoop/etc/hadoop/core-site.xml
         <configuration>
           <property>
@@ -62,6 +61,14 @@ services:
           <property>
             <name>dfs.replication</name>
             <value>1</value>
+          </property>
+          <property>
+            <name>dfs.permissions.enabled</name>
+            <value>false</value>
+          </property>
+          <property>
+            <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
+            <value>false</value>
           </property>
           <property>
             <name>dfs.client.use.datanode.hostname</name>
@@ -96,13 +103,12 @@ services:
     image: apache/hadoop:3.3.6
     platform: linux/amd64
     container_name: pipeline-datanode
-    environment:
-      HADOOP_OPTS: "-Xint"
     entrypoint: []
     command:
       - /bin/bash
       - -c
       - |
+        export HADOOP_OPTS="$$HADOOP_OPTS -Xint"
         cat <<EOF > /opt/hadoop/etc/hadoop/core-site.xml
         <configuration>
           <property>
@@ -119,8 +125,20 @@ services:
             <value>1</value>
           </property>
           <property>
+            <name>dfs.permissions.enabled</name>
+            <value>false</value>
+          </property>
+          <property>
             <name>dfs.client.use.datanode.hostname</name>
             <value>true</value>
+          </property>
+          <property>
+            <name>dfs.datanode.use.datanode.hostname</name>
+            <value>true</value>
+          </property>
+          <property>
+            <name>dfs.datanode.hostname</name>
+            <value>localhost</value>
           </property>
           <property>
             <name>dfs.datanode.data.dir</name>

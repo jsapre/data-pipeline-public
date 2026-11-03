@@ -44,6 +44,7 @@ public class SparkStreamingProcessor implements CommandLineRunner {
                     .getOrCreate();
 
             // Set Hadoop client config for local execution
+            System.setProperty("HADOOP_USER_NAME", "hadoop");
             spark.sparkContext().hadoopConfiguration().set("dfs.client.use.datanode.hostname", "true");
 
             // 1. Read Stream from Kafka
